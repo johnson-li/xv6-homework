@@ -1,11 +1,11 @@
 #include "types.h"
 #include "x86.h"
 #include "defs.h"
-#include "date.h"
 #include "param.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "date.h"
 
 int
 sys_fork(void)
@@ -88,4 +88,15 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+int
+sys_date(void)
+{
+  struct rtcdate *rt;
+  if (argptr(0, (void *)&rt, sizeof(*rt)) == -1) {
+    return -1;
+  }
+  cmostime(rt);
+  return 0;
 }

@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "x86.h"
 #include "syscall.h"
+#include "date.h"
 
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
@@ -98,6 +99,7 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_date(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -121,16 +123,17 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_date]   sys_date,
 };
 
-static char *syscall_name[] = {
+/*static char *syscall_name[] = {
 "fork  \0", "exit  \0", "wait  \0", "pipe  \0",
 "read  \0", "kill  \0", "exec  \0", "fstat \0",
 "chdir \0", "dup   \0", "getpid\0", "sbrk  \0",
 "sleep \0", "uptime\0", "open  \0", "write \0",
 "mknod \0", "unlink\0", "link  \0", "mkdir \0",
-"close \0"
-};
+"close \0", "date \0"
+};*/
 
 void
 syscall(void)
@@ -140,7 +143,7 @@ syscall(void)
   num = proc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     proc->tf->eax = syscalls[num]();
-	cprintf("%s -> %d\n", syscall_name[num - 1], proc->tf->eax);
+	//cprintf("%s -> %d\n", syscall_name[num - 1], proc->tf->eax);
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             proc->pid, proc->name, num);
