@@ -52,6 +52,14 @@ trap(struct trapframe *tf)
   case T_IRQ0 + IRQ_TIMER:
     if(cpu->id == 0){
       acquire(&tickslock);
+	  if (proc && (tf->cs & 3) == 3) {
+	    proc->count = (proc->count + 1) % proc->alarmticks;
+		if (proc->count == 0) {
+          *((int*)tf->esp) = tf->eip;
+          tf->esp = tf->esp - 4;
+          tf->eip = (int)proc->alarmhandler;
+		}
+	  }
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
@@ -105,7 +113,7 @@ trap(struct trapframe *tf)
             "eip 0x%x addr 0x%x--kill proc\n",
             proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip, 
             rcr2());
-    proc->killed = 1;
+    //proc->killed = 1;
   }
 
   // Force process exit if it has been killed and is in user space.

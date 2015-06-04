@@ -100,6 +100,7 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_date(void);
+extern int sys_alarm(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -123,7 +124,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_date]   sys_date,
+[SYS_date]    sys_date,
+[SYS_alarm]   sys_alarm,
 };
 
 /*static char *syscall_name[] = {
@@ -132,7 +134,7 @@ static int (*syscalls[])(void) = {
 "chdir \0", "dup   \0", "getpid\0", "sbrk  \0",
 "sleep \0", "uptime\0", "open  \0", "write \0",
 "mknod \0", "unlink\0", "link  \0", "mkdir \0",
-"close \0", "date \0"
+"close \0", "date  \0", "alarm\0"
 };*/
 
 void
